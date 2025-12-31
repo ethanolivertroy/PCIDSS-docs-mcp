@@ -1,0 +1,325 @@
+{
+  "version": "1.0",
+  "lastUpdated": "2024-12-30",
+  "description": "PCI-DSS v4.0.1 to security framework control mappings",
+  "frameworks": {
+    "NIST-800-53": {
+      "version": "Rev. 5",
+      "url": "https://csrc.nist.gov/publications/detail/sp/800-53/rev-5/final"
+    },
+    "ISO-27001": {
+      "version": "2022",
+      "url": "https://www.iso.org/standard/27001"
+    },
+    "FedRAMP": {
+      "version": "Rev. 5",
+      "url": "https://www.fedramp.gov"
+    },
+    "CIS": {
+      "version": "v8",
+      "url": "https://www.cisecurity.org/controls/v8"
+    }
+  },
+  "mappings": [
+    {
+      "pciDssRequirement": "1",
+      "framework": "NIST-800-53",
+      "controls": [
+        {
+          "controlId": "SC-7",
+          "controlName": "Boundary Protection",
+          "controlFamily": "System and Communications Protection",
+          "mappingType": "primary"
+        },
+        {
+          "controlId": "AC-4",
+          "controlName": "Information Flow Enforcement",
+          "controlFamily": "Access Control",
+          "mappingType": "primary"
+        }
+      ]
+    },
+    {
+      "pciDssRequirement": "1.1",
+      "framework": "NIST-800-53",
+      "controls": [
+        {
+          "controlId": "CM-6",
+          "controlName": "Configuration Settings",
+          "controlFamily": "Configuration Management",
+          "mappingType": "primary"
+        },
+        {
+          "controlId": "CM-7",
+          "controlName": "Least Functionality",
+          "controlFamily": "Configuration Management",
+          "mappingType": "supporting"
+        }
+      ]
+    },
+    {
+      "pciDssRequirement": "2",
+      "framework": "NIST-800-53",
+      "controls": [
+        {
+          "controlId": "CM-6",
+          "controlName": "Configuration Settings",
+          "controlFamily": "Configuration Management",
+          "mappingType": "primary"
+        },
+        {
+          "controlId": "CM-7",
+          "controlName": "Least Functionality",
+          "controlFamily": "Configuration Management",
+          "mappingType": "primary"
+        }
+      ]
+    },
+    {
+      "pciDssRequirement": "3",
+      "framework": "NIST-800-53",
+      "controls": [
+        {
+          "controlId": "SC-28",
+          "controlName": "Protection of Information at Rest",
+          "controlFamily": "System and Communications Protection",
+          "mappingType": "primary"
+        },
+        {
+          "controlId": "MP-5",
+          "controlName": "Media Transport",
+          "controlFamily": "Media Protection",
+          "mappingType": "supporting"
+        }
+      ]
+    },
+    {
+      "pciDssRequirement": "4",
+      "framework": "NIST-800-53",
+      "controls": [
+        {
+          "controlId": "SC-8",
+          "controlName": "Transmission Confidentiality and Integrity",
+          "controlFamily": "System and Communications Protection",
+          "mappingType": "primary"
+        },
+        {
+          "controlId": "SC-13",
+          "controlName": "Cryptographic Protection",
+          "controlFamily": "System and Communications Protection",
+          "mappingType": "primary"
+        }
+      ]
+    },
+    {
+      "pciDssRequirement": "5",
+      "framework": "NIST-800-53",
+      "controls": [
+        {
+          "controlId": "SI-3",
+          "controlName": "Malicious Code Protection",
+          "controlFamily": "System and Information Integrity",
+          "mappingType": "primary"
+        }
+      ]
+    },
+    {
+      "pciDssRequirement": "6",
+      "framework": "NIST-800-53",
+      "controls": [
+        {
+          "controlId": "SA-11",
+          "controlName": "Developer Testing and Evaluation",
+          "controlFamily": "System and Services Acquisition",
+          "mappingType": "primary"
+        },
+        {
+          "controlId": "SI-2",
+          "controlName": "Flaw Remediation",
+          "controlFamily": "System and Information Integrity",
+          "mappingType": "primary"
+        },
+        {
+          "controlId": "RA-5",
+          "controlName": "Vulnerability Monitoring and Scanning",
+          "controlFamily": "Risk Assessment",
+          "mappingType": "supporting"
+        }
+      ]
+    },
+    {
+      "pciDssRequirement": "7",
+      "framework": "NIST-800-53",
+      "controls": [
+        {
+          "controlId": "AC-3",
+          "controlName": "Access Enforcement",
+          "controlFamily": "Access Control",
+          "mappingType": "primary"
+        },
+        {
+          "controlId": "AC-6",
+          "controlName": "Least Privilege",
+          "controlFamily": "Access Control",
+          "mappingType": "primary"
+        }
+      ]
+    },
+    {
+      "pciDssRequirement": "8",
+      "framework": "NIST-800-53",
+      "controls": [
+        {
+          "controlId": "IA-2",
+          "controlName": "Identification and Authentication",
+          "controlFamily": "Identification and Authentication",
+          "mappingType": "primary"
+        },
+        {
+          "controlId": "IA-5",
+          "controlName": "Authenticator Management",
+          "controlFamily": "Identification and Authentication",
+          "mappingType": "primary"
+        }
+      ]
+    },
+    {
+      "pciDssRequirement": "9",
+      "framework": "NIST-800-53",
+      "controls": [
+        {
+          "controlId": "PE-2",
+          "controlName": "Physical Access Authorizations",
+          "controlFamily": "Physical and Environmental Protection",
+          "mappingType": "primary"
+        },
+        {
+          "controlId": "PE-3",
+          "controlName": "Physical Access Control",
+          "controlFamily": "Physical and Environmental Protection",
+          "mappingType": "primary"
+        }
+      ]
+    },
+    {
+      "pciDssRequirement": "10",
+      "framework": "NIST-800-53",
+      "controls": [
+        {
+          "controlId": "AU-2",
+          "controlName": "Event Logging",
+          "controlFamily": "Audit and Accountability",
+          "mappingType": "primary"
+        },
+        {
+          "controlId": "AU-3",
+          "controlName": "Content of Audit Records",
+          "controlFamily": "Audit and Accountability",
+          "mappingType": "primary"
+        },
+        {
+          "controlId": "AU-6",
+          "controlName": "Audit Record Review, Analysis, and Reporting",
+          "controlFamily": "Audit and Accountability",
+          "mappingType": "primary"
+        }
+      ]
+    },
+    {
+      "pciDssRequirement": "11",
+      "framework": "NIST-800-53",
+      "controls": [
+        {
+          "controlId": "RA-5",
+          "controlName": "Vulnerability Monitoring and Scanning",
+          "controlFamily": "Risk Assessment",
+          "mappingType": "primary"
+        },
+        {
+          "controlId": "CA-2",
+          "controlName": "Control Assessments",
+          "controlFamily": "Assessment, Authorization, and Monitoring",
+          "mappingType": "primary"
+        },
+        {
+          "controlId": "CA-8",
+          "controlName": "Penetration Testing",
+          "controlFamily": "Assessment, Authorization, and Monitoring",
+          "mappingType": "primary"
+        }
+      ]
+    },
+    {
+      "pciDssRequirement": "12",
+      "framework": "NIST-800-53",
+      "controls": [
+        {
+          "controlId": "PL-1",
+          "controlName": "Policy and Procedures",
+          "controlFamily": "Planning",
+          "mappingType": "primary"
+        },
+        {
+          "controlId": "AT-2",
+          "controlName": "Literacy Training and Awareness",
+          "controlFamily": "Awareness and Training",
+          "mappingType": "primary"
+        },
+        {
+          "controlId": "IR-1",
+          "controlName": "Policy and Procedures",
+          "controlFamily": "Incident Response",
+          "mappingType": "supporting"
+        }
+      ]
+    },
+    {
+      "pciDssRequirement": "1",
+      "framework": "CIS",
+      "controls": [
+        {
+          "controlId": "4.4",
+          "controlName": "Implement and Manage a Firewall on Servers",
+          "controlFamily": "Network Security",
+          "mappingType": "primary"
+        },
+        {
+          "controlId": "4.5",
+          "controlName": "Implement and Manage a Firewall on End-User Devices",
+          "controlFamily": "Network Security",
+          "mappingType": "supporting"
+        },
+        {
+          "controlId": "12.2",
+          "controlName": "Establish and Maintain a Secure Network Architecture",
+          "controlFamily": "Network Infrastructure Management",
+          "mappingType": "primary"
+        }
+      ]
+    },
+    {
+      "pciDssRequirement": "8",
+      "framework": "CIS",
+      "controls": [
+        {
+          "controlId": "5.2",
+          "controlName": "Use Unique Passwords",
+          "controlFamily": "Account Management",
+          "mappingType": "primary"
+        },
+        {
+          "controlId": "5.3",
+          "controlName": "Disable Dormant Accounts",
+          "controlFamily": "Account Management",
+          "mappingType": "supporting"
+        },
+        {
+          "controlId": "6.3",
+          "controlName": "Require MFA for Externally-Exposed Applications",
+          "controlFamily": "Access Control Management",
+          "mappingType": "primary"
+        }
+      ]
+    }
+  ]
+}

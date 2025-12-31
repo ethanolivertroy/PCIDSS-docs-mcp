@@ -1,0 +1,276 @@
+{
+  "version": "1.0",
+  "lastUpdated": "2024-12-30",
+  "description": "Evidence collection examples for PCI-DSS v4.0.1 requirements",
+  "disclaimer": "These are example evidence types. Actual evidence required depends on your environment, QSA, and implementation. Always consult with your QSA for specific evidence requirements.",
+  "examples": {
+    "1": {
+      "requirement": "Install and Maintain Network Security Controls",
+      "evidenceTypes": [
+        {
+          "type": "configuration",
+          "description": "Firewall and router configuration files",
+          "examples": [
+            "Firewall ruleset exports",
+            "Router ACL configurations",
+            "Network security group rules (cloud)",
+            "Screenshots of firewall policies"
+          ]
+        },
+        {
+          "type": "documentation",
+          "description": "Network diagrams and documentation",
+          "examples": [
+            "Current network diagram showing CDE boundaries",
+            "Data flow diagrams",
+            "Network segmentation documentation",
+            "Change management records for network changes"
+          ]
+        },
+        {
+          "type": "scan",
+          "description": "Network vulnerability scans",
+          "examples": [
+            "Quarterly vulnerability scan reports",
+            "Wireless access point scans",
+            "Port scans of perimeter and CDE"
+          ]
+        }
+      ]
+    },
+    "2": {
+      "requirement": "Apply Secure Configurations to All System Components",
+      "evidenceTypes": [
+        {
+          "type": "configuration",
+          "description": "System hardening standards and configurations",
+          "examples": [
+            "Configuration baseline documents",
+            "System hardening checklists (CIS benchmarks, vendor guides)",
+            "Sample system configurations",
+            "Baseline configuration files"
+          ]
+        },
+        {
+          "type": "scan",
+          "description": "Configuration compliance scans",
+          "examples": [
+            "Configuration assessment reports",
+            "Hardening validation scan results",
+            "Insecure service scans"
+          ]
+        }
+      ]
+    },
+    "3": {
+      "requirement": "Protect Stored Account Data",
+      "evidenceTypes": [
+        {
+          "type": "documentation",
+          "description": "Data retention and disposal policies",
+          "examples": [
+            "Data retention policy",
+            "Data disposal procedures",
+            "Cardholder data inventory",
+            "Quarterly data retention verification logs"
+          ]
+        },
+        {
+          "type": "configuration",
+          "description": "Encryption configurations",
+          "examples": [
+            "Disk encryption status reports",
+            "Database encryption configuration",
+            "Key management system documentation",
+            "Encryption key rotation logs"
+          ]
+        },
+        {
+          "type": "report",
+          "description": "PAN masking/truncation examples",
+          "examples": [
+            "Screenshots showing masked PANs in applications",
+            "Database query results showing truncated PANs",
+            "Application logs with masked data"
+          ]
+        }
+      ]
+    },
+    "6": {
+      "requirement": "Develop and Maintain Secure Systems and Software",
+      "evidenceTypes": [
+        {
+          "type": "documentation",
+          "description": "Secure SDLC documentation",
+          "examples": [
+            "Secure development policy",
+            "Code review procedures",
+            "Security testing requirements",
+            "Change management procedures"
+          ]
+        },
+        {
+          "type": "scan",
+          "description": "Vulnerability assessment results",
+          "examples": [
+            "Application vulnerability scan reports",
+            "Penetration test reports",
+            "Code scanning tool results (SAST/DAST)",
+            "Dependency vulnerability scans"
+          ]
+        },
+        {
+          "type": "report",
+          "description": "Patch management evidence",
+          "examples": [
+            "Patch compliance reports",
+            "Critical patch installation logs",
+            "Patch testing documentation",
+            "Monthly patch status reports"
+          ]
+        }
+      ]
+    },
+    "8": {
+      "requirement": "Identify Users and Authenticate Access",
+      "evidenceTypes": [
+        {
+          "type": "configuration",
+          "description": "Authentication system configurations",
+          "examples": [
+            "Password policy settings",
+            "MFA configuration screenshots",
+            "Account lockout settings",
+            "Session timeout configurations"
+          ]
+        },
+        {
+          "type": "report",
+          "description": "User access reports",
+          "examples": [
+            "User account listings with creation dates",
+            "Privileged user access reviews",
+            "Inactive account reports",
+            "MFA enrollment status"
+          ]
+        },
+        {
+          "type": "log",
+          "description": "Authentication logs",
+          "examples": [
+            "Successful/failed login attempts",
+            "MFA challenge logs",
+            "Password change logs",
+            "Account lockout events"
+          ]
+        }
+      ]
+    },
+    "10": {
+      "requirement": "Log and Monitor All Access",
+      "evidenceTypes": [
+        {
+          "type": "log",
+          "description": "Audit logs and logging evidence",
+          "examples": [
+            "Sample audit logs showing required fields",
+            "SIEM dashboard screenshots",
+            "Log retention verification",
+            "Centralized logging configuration"
+          ]
+        },
+        {
+          "type": "report",
+          "description": "Log review evidence",
+          "examples": [
+            "Daily log review checklists",
+            "Security alert investigation records",
+            "Monthly log review summaries",
+            "Automated alerting configuration"
+          ]
+        },
+        {
+          "type": "configuration",
+          "description": "Log protection configurations",
+          "examples": [
+            "Log file integrity monitoring settings",
+            "Log access restrictions",
+            "Log backup configurations",
+            "Time synchronization settings"
+          ]
+        }
+      ]
+    },
+    "11": {
+      "requirement": "Test Security of Systems and Networks Regularly",
+      "evidenceTypes": [
+        {
+          "type": "scan",
+          "description": "Vulnerability scan reports",
+          "examples": [
+            "Quarterly ASV scans with passing results",
+            "Internal vulnerability scan reports",
+            "Authenticated scan results",
+            "Scan coverage documentation"
+          ]
+        },
+        {
+          "type": "report",
+          "description": "Penetration test reports",
+          "examples": [
+            "Annual penetration test report",
+            "Segmentation testing results",
+            "Remediation validation testing",
+            "Penetration test scope documentation"
+          ]
+        },
+        {
+          "type": "report",
+          "description": "Intrusion detection evidence",
+          "examples": [
+            "IDS/IPS configuration",
+            "Security alert examples",
+            "Alert investigation logs",
+            "IDS/IPS tuning documentation"
+          ]
+        }
+      ]
+    },
+    "12": {
+      "requirement": "Support Information Security with Policies and Programs",
+      "evidenceTypes": [
+        {
+          "type": "documentation",
+          "description": "Security policies and procedures",
+          "examples": [
+            "Information security policy",
+            "Acceptable use policy",
+            "Incident response plan",
+            "All requirement-specific procedures",
+            "Policy review and approval records"
+          ]
+        },
+        {
+          "type": "report",
+          "description": "Security awareness training",
+          "examples": [
+            "Training materials and curriculum",
+            "Training completion records",
+            "Training attendance logs",
+            "Security awareness acknowledgements"
+          ]
+        },
+        {
+          "type": "report",
+          "description": "Risk assessment documentation",
+          "examples": [
+            "Annual risk assessment report",
+            "Targeted risk analyses",
+            "Risk treatment plans",
+            "Risk register"
+          ]
+        }
+      ]
+    }
+  }
+}

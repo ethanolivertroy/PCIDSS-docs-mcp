@@ -1,0 +1,345 @@
+#!/usr/bin/env python3
+"""
+PCI-DSS PDF to JSON/Markdown converter using Docling
+
+Converts PCI-DSS PDF documents into structured JSON and searchable Markdown.
+Extracts requirements, testing procedures, customized approach objectives, and guidance.
+
+Usage:
+    python scripts/docling_convert.py <pdf_path> <output_dir>
+
+Example:
+    python scripts/docling_convert.py data/pdfs/PCI-DSS-v4_0_1.pdf data/converted
+"""
+
+import sys
+import json
+import hashlib
+from pathlib import Path
+from datetime import datetime
+import re
+from typing import Dict, List, Any, Optional
+
+try:
+    from docling.document_converter import DocumentConverter
+except ImportError:
+    print("Error: docling not installed. Run: pip install docling", file=sys.stderr)
+    sys.exit(1)
+
+
+def parse_requirement_id(text: str) -> Optional[str]:
+    """
+    Extract PCI-DSS requirement ID from text.
+    Examples: "Requirement 1:", "1.2.3", "- 1.2 Text", "Requirement 12.3.4"
+    """
+    # Match patterns like "Requirement 1", "1.2.3", "- 1.2 Text", etc.
+    patterns = [
+        r'Requirement\s+(\d+(?:\.\d+)*)',  # "Requirement 1.2.3"
+        r'^-?\s*(\d+(?:\.\d+)*)\s+',       # "1.2.3 " or "- 1.2.3 " at start
+        r'^-?\s*(\d+(?:\.\d+)*)\.',        # "1.2.3." or "- 1.2.3." at start
+    ]
+
+    for pattern in patterns:
+        match = re.search(pattern, text, re.IGNORECASE)
+        if match:
+            return match.group(1)
+
+    return None
+
+
+def calculate_requirement_level(req_id: str) -> int:
+    """
+    Calculate hierarchy level from requirement ID.
+    Examples: "1" -> 1, "1.2" -> 2, "1.2.3" -> 3
+    """
+    return len(req_id.split('.'))
+
+
+def get_parent_id(req_id: str) -> Optional[str]:
+    """
+    Get parent requirement ID.
+    Examples: "1.2.3" -> "1.2", "1.2" -> "1", "1" -> None
+    """
+    parts = req_id.split('.')
+    if len(parts) == 1:
+        return None
+    return '.'.join(parts[:-1])
+
+
+def extract_title(line: str, req_id: str) -> str:
+    """Extract requirement title from line, removing ID prefix."""
+    # Remove markdown headers
+    text = line.strip('#').strip()
+
+    # Remove "Requirement X:" prefix
+    text = re.sub(r'^Requirement\s+\d+:\s*', '', text, flags=re.IGNORECASE)
+
+    # Remove numbered prefix like "1.1 " or "1.1.1 "
+    text = re.sub(r'^\d+(?:\.\d+)*\s+', '', text)
+
+    return text.strip()
+
+
+def extract_from_table_row(row: str, requirements_map: Dict[str, Dict[str, Any]]) -> None:
+    """Extract requirement details from a markdown table row."""
+    # Look for "Defined Approach Requirements X.Y.Z.W" (level 4) or "X.Y.Z" (level 3)
+    req_match = re.search(r'Defined Approach Requirements\s+(\d+(?:\.\d+){2,3})\s+(.+?)(?:\s*\|)', row)
+    if req_match:
+        req_id = req_match.group(1)
+        statement = req_match.group(2).strip()
+
+        # Create or update requirement
+        if req_id not in requirements_map:
+            requirements_map[req_id] = {
+                'id': req_id,
+                'number': req_id,
+                'level': calculate_requirement_level(req_id),
+                'parentId': get_parent_id(req_id),
+                'title': statement[:100] + '...' if len(statement) > 100 else statement,
+                'statement': statement,
+                'definedApproach': {
+                    'requirement': statement,
+                    'testingProcedures': []
+                },
+                'customizedApproach': {
+                    'objective': '',
+                    'exampleImplementations': []
+                }
+            }
+        else:
+            requirements_map[req_id]['statement'] = statement
+            requirements_map[req_id]['definedApproach']['requirement'] = statement
+
+    # Look for "Defined Approach Testing Procedures X.Y.Z.a" or "X.Y.Z.W.a" (with letter)
+    test_match = re.search(r'Defined Approach Testing Procedures\s+(\d+(?:\.\d+){2,3}\.[a-z])\s+(.+?)(?:\s*\|)', row)
+    if test_match:
+        proc_id = test_match.group(1)
+        description = test_match.group(2).strip()
+
+        # Extract parent requirement ID (e.g., 1.1.1.a -> 1.1.1)
+        parent_id = '.'.join(proc_id.split('.')[:-1])
+
+        if parent_id in requirements_map:
+            requirements_map[parent_id]['definedApproach']['testingProcedures'].append({
+                'id': proc_id,
+                'description': description
+            })
+
+    # Look for "Customized Approach Objective"
+    custom_match = re.search(r'Customized Approach Objective\s+(.+?)(?:\s*\|)', row)
+    if custom_match:
+        objective = custom_match.group(1).strip()
+
+        # Find the requirement this objective belongs to
+        # Usually in the same row as the requirement
+        if req_match:
+            req_id = req_match.group(1)
+            if req_id in requirements_map:
+                requirements_map[req_id]['customizedApproach']['objective'] = objective
+
+
+def extract_requirements_from_docling(doc_result) -> List[Dict[str, Any]]:
+    """
+    Extract PCI-DSS requirements from Docling document result.
+
+    Uses multi-pass parsing to handle:
+    - Level 1: Principal requirements (## Requirement X:)
+    - Level 2: Sub-requirements (- X.Y Text)
+    - Level 3: Detailed requirements (table cells)
+    """
+    requirements_map: Dict[str, Dict[str, Any]] = {}
+
+    # Get markdown output
+    markdown = doc_result.document.export_to_markdown()
+    lines = markdown.split('\n')
+
+    # Pass 1: Extract principal requirements (level 1) and list items (level 2)
+    current_requirement = None
+
+    for i, line in enumerate(lines):
+        # Handle table rows - process each row individually
+        if line.strip().startswith('|'):
+            extract_from_table_row(line.strip(), requirements_map)
+            continue
+
+        # Extract requirement ID from line
+        req_id = parse_requirement_id(line)
+
+        if req_id:
+            # Principal requirement (markdown header)
+            if line.strip().startswith('## Requirement'):
+                level = 1
+                title = extract_title(line, req_id)
+
+                requirements_map[req_id] = {
+                    'id': req_id,
+                    'number': req_id,
+                    'level': level,
+                    'parentId': get_parent_id(req_id),
+                    'title': title,
+                    'statement': title,
+                    'definedApproach': {
+                        'requirement': '',
+                        'testingProcedures': []
+                    },
+                    'customizedApproach': {
+                        'objective': '',
+                        'exampleImplementations': []
+                    }
+                }
+                current_requirement = req_id
+
+            # Principal requirement (plain text without ##)
+            elif line.strip().startswith('Requirement ') and req_id.isdigit() and int(req_id) >= 1 and int(req_id) <= 12:
+                level = 1
+                title = extract_title(line, req_id)
+
+                requirements_map[req_id] = {
+                    'id': req_id,
+                    'number': req_id,
+                    'level': level,
+                    'parentId': get_parent_id(req_id),
+                    'title': title,
+                    'statement': title,
+                    'definedApproach': {
+                        'requirement': '',
+                        'testingProcedures': []
+                    },
+                    'customizedApproach': {
+                        'objective': '',
+                        'exampleImplementations': []
+                    }
+                }
+                current_requirement = req_id
+
+            # Level-2 requirement (list item)
+            elif line.strip().startswith('- ') and '.' in req_id and req_id.count('.') == 1:
+                level = 2
+                title = extract_title(line, req_id)
+
+                requirements_map[req_id] = {
+                    'id': req_id,
+                    'number': req_id,
+                    'level': level,
+                    'parentId': get_parent_id(req_id),
+                    'title': title,
+                    'statement': title,
+                    'definedApproach': {
+                        'requirement': '',
+                        'testingProcedures': []
+                    },
+                    'customizedApproach': {
+                        'objective': '',
+                        'exampleImplementations': []
+                    }
+                }
+
+    # Convert map to sorted list
+    requirements = sorted(requirements_map.values(), key=lambda r: [int(x) for x in r['id'].split('.')])
+
+    return requirements
+
+
+def convert_pdf_to_json(pdf_path: Path, output_dir: Path) -> Dict[str, Any]:
+    """
+    Convert PCI-DSS PDF to structured JSON using Docling.
+    """
+    print(f"Converting {pdf_path} to JSON...", file=sys.stderr)
+
+    # Initialize Docling converter
+    # Use default settings - PCI-DSS PDFs have text layer, no OCR needed
+    converter = DocumentConverter()
+
+    # Convert PDF
+    result = converter.convert(str(pdf_path))
+
+    # Extract requirements
+    requirements = extract_requirements_from_docling(result)
+
+    # Get PDF hash for cache invalidation
+    pdf_hash = hashlib.sha256(pdf_path.read_bytes()).hexdigest()
+
+    # Build document structure
+    document = {
+        'info': {
+            'version': '4.0.1',  # TODO: Extract from PDF
+            'published': '2024-03-31',  # TODO: Extract from PDF
+            'effectiveDate': '2024-03-31',  # TODO: Extract from PDF
+            'documentType': 'standard',
+            'convertedAt': datetime.now().isoformat(),
+            'convertedBy': 'docling',
+            'pdfHash': pdf_hash
+        },
+        'requirements': requirements,
+        'appendices': [],  # TODO: Extract appendices
+        'glossary': []     # TODO: Extract glossary
+    }
+
+    return document
+
+
+def convert_pdf_to_markdown(pdf_path: Path, output_dir: Path) -> str:
+    """
+    Convert PCI-DSS PDF to searchable Markdown using Docling.
+    """
+    print(f"Converting {pdf_path} to Markdown...", file=sys.stderr)
+
+    # Use default converter settings
+    converter = DocumentConverter()
+
+    result = converter.convert(str(pdf_path))
+    markdown = result.document.export_to_markdown()
+
+    return markdown
+
+
+def main():
+    if len(sys.argv) != 3:
+        print("Usage: python scripts/docling_convert.py <pdf_path> <output_dir>", file=sys.stderr)
+        sys.exit(1)
+
+    pdf_path = Path(sys.argv[1])
+    output_dir = Path(sys.argv[2])
+
+    if not pdf_path.exists():
+        print(f"Error: PDF not found: {pdf_path}", file=sys.stderr)
+        sys.exit(1)
+
+    # Create output directory
+    output_dir.mkdir(parents=True, exist_ok=True)
+
+    try:
+        # Convert to JSON
+        document = convert_pdf_to_json(pdf_path, output_dir)
+        json_path = output_dir / 'requirements.json'
+        json_path.write_text(json.dumps(document, indent=2, ensure_ascii=False))
+        print(f"✓ Created {json_path}", file=sys.stderr)
+
+        # Convert to Markdown
+        markdown = convert_pdf_to_markdown(pdf_path, output_dir)
+        md_path = output_dir / 'requirements.md'
+        md_path.write_text(markdown)
+        print(f"✓ Created {md_path}", file=sys.stderr)
+
+        # Create metadata file
+        metadata = {
+            'convertedAt': datetime.now().isoformat(),
+            'pdfPath': str(pdf_path),
+            'pdfHash': hashlib.sha256(pdf_path.read_bytes()).hexdigest(),
+            'requirementCount': len(document['requirements'])
+        }
+        meta_path = output_dir / 'metadata.json'
+        meta_path.write_text(json.dumps(metadata, indent=2))
+        print(f"✓ Created {meta_path}", file=sys.stderr)
+
+        print(f"\n✅ Conversion complete: {len(document['requirements'])} requirements extracted", file=sys.stderr)
+
+    except Exception as e:
+        print(f"Error during conversion: {e}", file=sys.stderr)
+        import traceback
+        traceback.print_exc()
+        sys.exit(1)
+
+
+if __name__ == '__main__':
+    main()

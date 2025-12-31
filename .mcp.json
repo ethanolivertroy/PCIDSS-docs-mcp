@@ -1,0 +1,8 @@
+{
+  "pcidss-docs": {
+    "command": "node",
+    "args": ["${PLUGIN_DIR}/dist/index.js"],
+    "description": "PCI-DSS v4.0.1 compliance documentation and control mapping server",
+    "disabled": false
+  }
+}

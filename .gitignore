@@ -1,0 +1,48 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+
+# Cache
+.cache/
+
+# Environment files
+.env
+.env.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Temp
+tmp/
+temp/
+
+# PCI DSS derived content (users must convert their own PDFs)
+data/converted/requirements.json
+data/converted/requirements.md
+data/converted/metadata.json
+
+# PDFs (copyrighted content, not source code)
+data/pdfs/*.pdf
+
+# Personal planning/notes directories
+.claude/

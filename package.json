@@ -1,0 +1,78 @@
+{
+  "name": "pcidss-docs-mcp",
+  "version": "1.0.0",
+  "description": "PCI-DSS v4.0.1 compliance documentation MCP server with 15 tools for requirement lookup, control mapping, gap analysis, and evidence collection. Supports v3.2.1 → v4.0.1 migration.",
+  "type": "module",
+  "author": "Ethan Troy",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ethanolivertroy/pcidss-docs-mcp.git"
+  },
+  "homepage": "https://github.com/ethanolivertroy/pcidss-docs-mcp#readme",
+  "bugs": {
+    "url": "https://github.com/ethanolivertroy/pcidss-docs-mcp/issues"
+  },
+  "keywords": [
+    "pci-dss",
+    "compliance",
+    "security",
+    "payment-card-industry",
+    "mcp",
+    "model-context-protocol",
+    "nist-800-53",
+    "iso-27001",
+    "fedramp",
+    "cis",
+    "soc2",
+    "control-mapping",
+    "gap-analysis",
+    "evidence-collection",
+    "audit"
+  ],
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist/",
+    "data/control-mappings.json",
+    "data/evidence-examples.json",
+    "data/converted/.gitkeep",
+    "data/pdfs/README.md",
+    "scripts/",
+    "requirements.txt",
+    "tutorials/",
+    ".claude-plugin/",
+    ".mcp.json",
+    "README.md",
+    "SETUP.md",
+    "CONTRIBUTING.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "scripts": {
+    "build": "tsc -p .",
+    "dev": "tsx src/index.ts",
+    "start": "node dist/index.js",
+    "convert-pdfs": "tsx src/scripts/convert-pdfs.ts",
+    "postinstall": "node -e \"console.log('\\n⚠️  IMPORTANT: This tool does NOT include PCI-DSS data.\\n\\nYou must:\\n  1. Download PCI-DSS v4.0.1 from https://www.pcisecuritystandards.org/document_library/\\n  2. Accept the PCI DSS License Agreement\\n  3. Run: npm run convert-pdfs\\n\\nSee SETUP.md for detailed instructions.\\n')\"",
+    "check-data": "node -e \"const fs=require('fs'); const p='data/converted/requirements.json'; if(!fs.existsSync(p)){console.error('❌ Missing '+p+'\\nRun: npm run convert-pdfs');process.exit(1)}else{console.log('✅ Data files present')}\""
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.24.0",
+    "escape-string-regexp": "^5.0.0",
+    "fs-extra": "^11.2.0",
+    "glob": "^10.5.0",
+    "lunr": "^2.3.9",
+    "simple-git": "^3.22.0",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/fs-extra": "^11.0.4",
+    "@types/lunr": "^2.3.7",
+    "@types/node": "^20.12.12",
+    "tsx": "^4.15.0",
+    "typescript": "^5.4.5"
+  }
+}
