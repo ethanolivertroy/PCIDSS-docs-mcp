@@ -14,3 +14,6 @@ converted/
 # IDE
 .vscode/
 .idea/
+
+# Testing artifacts
+.playwright-mcp/
